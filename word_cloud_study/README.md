@@ -26,16 +26,16 @@ pip install wordcloud
 
 文件[simple_zh.py](./simple_zh.png)生成一个显示中文的默认词云
 
-![中文词云](/img/simple_zh.png)
+![中文词云](img/simple_zh.png)
 
 文件[masked.py](./masked.py)生成一个有固定图案的词云
 
-![有图案的词云](/img/alice.png)
+![有图案的词云](img/alice.png)
 
 文件[colored_images.py](./colored_images.py)使用给定图片的配色方案制作词云
 
-![有配色方案的词云](/img/alice_colored.png)
+![有配色方案的词云](img/alice_colored.png)
 
 文件[a_new_hope.py](./a_new_hope.py)制作自定义词云的色彩
 
-![自定义词云色彩](/img/a_new_hope_CustomColors.png)
+![自定义词云色彩](img/a_new_hope_CustomColors.png)
