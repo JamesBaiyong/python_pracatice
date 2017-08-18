@@ -12,5 +12,6 @@ mytext=" ".join(jieba.cut(zh_text))
 wordcloud = WordCloud(font_path="./font/simsun.ttf").generate(mytext)
 
 plt.imshow(wordcloud,interpolation="bilinear")
+wordcloud.to_file('./img/simple_zh.png')
 plt.axis("off")
 plt.show()
