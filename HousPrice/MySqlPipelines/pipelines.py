@@ -8,8 +8,9 @@ class HousePricePipeline(object):
 	def process_item(self, item, spider):
 		if isinstance(item, HouspriceItem):
 			name = item['name']
+			table_name = item['table']
 			# TODO 带数据库表名
-			ret = SQL.select_name(name)
+			ret = SQL.select_name(table_name,name)
 			if ret[0] == 1:
 				print ('数据已存在。')
 			else:
@@ -19,5 +20,5 @@ class HousePricePipeline(object):
 				state = item['state']
 				position = item['position']
 				area = item['area']
-				SQL.insert_info(name, type, price,state,position,area)
+				SQL.insert_info(table_name,name,type,price,state,position,area)
 				print ('入库中...')

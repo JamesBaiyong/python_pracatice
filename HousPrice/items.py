@@ -21,3 +21,5 @@ class HouspriceItem(scrapy.Item):
     area = scrapy.Field()
     #销售情况
     state = scrapy.Field()
+    #数据库表
+    table = scrapy.Field()

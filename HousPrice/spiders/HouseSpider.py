@@ -42,6 +42,7 @@ class HouseSpider(Spider):
 				items['area'] = house_info.xpath('.//div[@class="area"]/span/text()').extract()[0]
 			except IndexError:
 				items['area'] = "--"
+			items['table'] = "chengdu"
 
 			yield items
 

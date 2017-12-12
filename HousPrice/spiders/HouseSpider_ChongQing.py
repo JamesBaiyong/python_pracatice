@@ -42,6 +42,8 @@ class HouseSpider(Spider):
 			except IndexError:
 				items['area'] = "--"
 
+			items['table'] = 'chongqing'
+
 			yield items
 
 		#翻页
