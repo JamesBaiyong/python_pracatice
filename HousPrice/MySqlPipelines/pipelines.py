@@ -10,7 +10,7 @@ class HousePricePipeline(object):
 			name = item['name']
 			table_name = item['table']
 			# TODO 带数据库表名
-			ret = SQL.select_name(table_name,name)
+			ret = SQL.select_name(name)
 			if ret[0] == 1:
 				print ('数据已存在。')
 			else:

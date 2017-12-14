@@ -39,6 +39,7 @@ class HouseSpider(Spider):
 
 			try:
 				items['area'] = house_info.xpath('.//div[@class="area"]/span/text()').extract()[0]
+				# items['area'] = 'tet'
 			except IndexError:
 				items['area'] = "--"
 
@@ -47,7 +48,7 @@ class HouseSpider(Spider):
 			yield items
 
 		#翻页
-		if self.num <= 79:
+		if self.num <= 78:
 			self.num += 1
 			next_page_url = self.start_url + 'pg' + str(self.num)
 			print next_page_url

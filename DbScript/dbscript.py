@@ -19,13 +19,45 @@ class SQL(object):
 			"price varchar(255) DEFAULT NULL," \
 		    "state varchar(255) DEFAULT NULL," \
 		    "position varchar(255) DEFAULT NULL," \
-		    "area varchar(255) DEFAULT NULL," \
+		    "area TEXT," \
 		    "PRIMARY KEY (id)" \
 		    ")ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;"
 		cur.execute(sql)
 		cnx.commit()
 
+	def delete_table(self,table_name):
+		sql = "drop table "+table_name+" ;"
+		cur.execute(sql)
+		cnx.commit()
+
+	# def insert_info(self,name,author,price,url):
+	def insert_info(self,name,type,price,state,position,area):
+		# sql = 'INSERT INTO baiduyuedu (name,author,price,url)  \
+		# 		                    VALUES (%(name)s,%(author)s,%(price)s,%(url)s)'
+		# value = {
+		# 	'name': name,
+		# 	'author': author,
+		# 	'price': price,
+		# 	'url': url
+		# }
+
+		sql1 = 'INSERT INTO chongqing (name,type,price,state,position,area)  \
+				                    VALUES (%(name)s,%(type)s,%(price)s,%(state)s,%(position)s,%(area)s)'
+		values1 = {
+			'name': name,
+			'type': type,
+			'price': price,
+			'state': state,
+			'position': position,
+			'area': area
+		}
+
+		cur.execute(sql1, values1)
+		cnx.commit()
+
 if __name__ == '__main__':
 	sql = SQL()
-	# sql.create_table('chongqing')
-	sql.create_table('chengdu')
+	sql.create_table('chongqing')
+	# sql.create_table('chengdu')
+	# sql.delete_table('chongqing')
+	# sql.insert_info('name','author','price','url','yy','sm')

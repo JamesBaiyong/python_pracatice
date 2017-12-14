@@ -16,9 +16,9 @@ class SQL(object):
 	#执行插入数据库语句
 	@classmethod
 	def insert_info(cls,table_name,name,type,price,state,position,area):
-		sql = "INSERT INTO " + table_name +" (name,author,price,url)  \
-		        VALUES (%(name)s,%(type)s,%(price)s,%(price)s,%s(state)s,%(position)s,%(area)s)"
-		value = {
+		sql = 'INSERT INTO '+table_name+' (name,type,price,state,position,area)  \
+						                    VALUES (%(name)s,%(type)s,%(price)s,%(state)s,%(position)s,%(area)s)'
+		values = {
 			'name': name,
 			'type': type,
 			'price': price,
@@ -26,13 +26,13 @@ class SQL(object):
 			'position': position,
 			'area': area
 		}
-		cur.execute(sql,value)
+		cur.execute(sql,values)
 		cnx.commit()
 
 	#查重
 	@classmethod
-	def select_name(cls,table_name,name):
-		sql = "SELECT EXISTS(SELECT 1 FROM " + table_name +" WHERE name=%(name)s)"
+	def select_name(cls,name):
+		sql = "SELECT EXISTS(SELECT 1 FROM chongqing WHERE name=%(name)s)"
 		value = {
 			'name': name
 		}
