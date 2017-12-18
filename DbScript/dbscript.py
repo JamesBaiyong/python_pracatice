@@ -20,6 +20,7 @@ class SQL(object):
 		    "state varchar(255) DEFAULT NULL," \
 		    "position varchar(255) DEFAULT NULL," \
 		    "area TEXT," \
+			"hash_data TEXT,"\
 		    "PRIMARY KEY (id)" \
 		    ")ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;"
 		cur.execute(sql)
@@ -57,7 +58,9 @@ class SQL(object):
 
 if __name__ == '__main__':
 	sql = SQL()
-	sql.create_table('chongqing')
-	# sql.create_table('chengdu')
+	# table_name = ['suzhou','xian','zhongshan','tianjin','nanjing','kunming','chongqing','chengdu','hangzhou','dalian','wuhan']
+	# for i in table_name:
+	# 	sql.create_table(i)
 	# sql.delete_table('chongqing')
+	sql.create_table('changsha')
 	# sql.insert_info('name','author','price','url','yy','sm')

@@ -15,26 +15,27 @@ class SQL(object):
 
 	#执行插入数据库语句
 	@classmethod
-	def insert_info(cls,table_name,name,type,price,state,position,area):
-		sql = 'INSERT INTO '+table_name+' (name,type,price,state,position,area)  \
-						                    VALUES (%(name)s,%(type)s,%(price)s,%(state)s,%(position)s,%(area)s)'
+	def insert_info(cls,table_name,name,type,price,state,position,area,hash_data):
+		sql = 'INSERT INTO '+table_name+' (name,type,price,state,position,area,hash_data)  \
+						                    VALUES (%(name)s,%(type)s,%(price)s,%(state)s,%(position)s,%(area)s,%(hash_data)s)'
 		values = {
 			'name': name,
 			'type': type,
 			'price': price,
 			'state': state,
 			'position': position,
-			'area': area
+			'area': area,
+			'hash_data':hash_data
 		}
 		cur.execute(sql,values)
 		cnx.commit()
 
 	#查重
 	@classmethod
-	def select_name(cls,name):
-		sql = "SELECT EXISTS(SELECT 1 FROM chongqing WHERE name=%(name)s)"
+	def select_name(cls,table_name,hash_data):
+		sql = "SELECT EXISTS(SELECT 1 FROM "+ table_name +" WHERE hash_data=%(hash_data)s)"
 		value = {
-			'name': name
+			'hash_data': hash_data
 		}
 		cur.execute(sql,value)
 		return cur.fetchall()[0]

@@ -23,3 +23,5 @@ class HouspriceItem(scrapy.Item):
     state = scrapy.Field()
     #数据库表
     table = scrapy.Field()
+    #
+    hash_data = scrapy.Field()

@@ -2,15 +2,15 @@
 
 from scrapy import Spider,Request
 from ..items import HouspriceItem
+from checkupdata import checkdata
 
-class HouseSpider(Spider):
+class HouseSpider_NanJing(Spider):
 
-	name = 'HousePrice'
+	name = 'HousePrice_NanJing'
 	headers = {
 		'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
 	}
-	# start_url = 'http://cq.fang.lianjia.com/loupan/'重庆
-	start_url = 'https://cd.fang.lianjia.com/loupan/'
+	start_url = 'https://nj.fang.lianjia.com/loupan/'
 	num = 1
 
 	def start_requests(self):
@@ -42,12 +42,13 @@ class HouseSpider(Spider):
 				items['area'] = house_info.xpath('.//div[@class="area"]/span/text()').extract()[0]
 			except IndexError:
 				items['area'] = "--"
-			items['table'] = "chengdu"
+			items['table'] = "nanjing"
+			items['hash_data'] = checkdata(items['name'] + items['position'])
 
 			yield items
 
 		#翻页
-		if self.num <= 93:
+		if self.num <= 36:
 			self.num += 1
 			next_page_url = self.start_url + 'pg' + str(self.num)
 			print next_page_url
