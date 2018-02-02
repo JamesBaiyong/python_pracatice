@@ -43,3 +43,5 @@ venv
 *.cfg
 *.xlsx
 *.csv
+
+.idea/
