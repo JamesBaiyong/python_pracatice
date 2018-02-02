@@ -1,0 +1,71 @@
+卷 系统 的文件夹 PATH 列表
+卷序列号为 00000088 7C67:49A5
+D:.
+│   成都新房信息.csv
+│   重庆新房信息.csv
+│  .gitignore
+│  main.py
+│  scrapy.cfg
+│  test.py
+│  tree.txt
+│  成都新房.xlsx
+│  
+├─DbScript
+│      dbscript.py
+│      
+├─HousPrice
+│  │  items.py
+│  │  items.pyc
+│  │  middlewares.py
+│  │  pipelines.py
+│  │  pipelines.pyc
+│  │  settings.py
+│  │  settings.pyc
+│  │  __init__.py
+│  │  __init__.pyc
+│  │  
+│  ├─MySqlPipelines
+│  │      pipelines.py
+│  │      pipelines.pyc
+│  │      sql.py
+│  │      sql.pyc
+│  │      __init__.py
+│  │      __init__.pyc
+│  │      
+│  └─spiders
+│          checkupdata.py
+│          checkupdata.pyc
+│          HouseSpider_ChangSha.py
+│          HouseSpider_ChangSha.pyc
+│          HouseSpider_ChengDu.py
+│          HouseSpider_ChengDu.pyc
+│          HouseSpider_ChongQing.py
+│          HouseSpider_ChongQing.pyc
+│          HouseSpider_DaLian.py
+│          HouseSpider_DaLian.pyc
+│          HouseSpider_HangZhou.py
+│          HouseSpider_HangZhou.pyc
+│          HouseSpider_KunMing.py
+│          HouseSpider_KunMing.pyc
+│          HouseSpider_NanJing.py
+│          HouseSpider_NanJing.pyc
+│          HouseSpider_SuZhou.py
+│          HouseSpider_SuZhou.pyc
+│          HouseSpider_TianJin.py
+│          HouseSpider_TianJin.pyc
+│          HouseSpider_WuHan.py
+│          HouseSpider_WuHan.pyc
+│          HouseSpider_XiAn.py
+│          HouseSpider_XiAn.pyc
+│          HouseSpider_ZhongShan.py
+│          HouseSpider_ZhongShan.pyc
+│          __init__.py
+│          __init__.pyc
+│          
+└─数据备份
+        成都新房.xlsx
+        成都新房信息.csv
+        重庆新房.csv
+        重庆新房.xlsx
+        重庆新房信息.csv
+        

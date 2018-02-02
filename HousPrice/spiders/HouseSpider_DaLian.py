@@ -4,13 +4,13 @@ from scrapy import Spider,Request
 from ..items import HouspriceItem
 from checkupdata import checkdata
 
-class HouseSpider_TianJin(Spider):
+class HouseSpider_DaLian(Spider):
 
-	name = 'HousePrice_TianJin'
+	name = 'HousePrice_DaLian'
 	headers = {
 		'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
 	}
-	start_url = 'https://tj.fang.lianjia.com/loupan/'
+	start_url = 'https://dl.fang.lianjia.com/loupan/'
 	num = 1
 
 	def start_requests(self):
@@ -19,7 +19,6 @@ class HouseSpider_TianJin(Spider):
 	def parse(self, response):
 		items = HouspriceItem()
 		house_list = response.xpath('//ul[@id="house-lst"]/li')
-		print house_list
 		for house_info in house_list:
 			items['name'] = house_info.xpath('.//div[@class="info-panel"]/div[1]/h2/a/text()').extract()[0]
 			items['type'] = house_info.xpath('.//div[@class="type"]/span[2]/text()').extract()[0]
@@ -43,13 +42,13 @@ class HouseSpider_TianJin(Spider):
 				items['area'] = house_info.xpath('.//div[@class="area"]/span/text()').extract()[0]
 			except IndexError:
 				items['area'] = "--"
-			items['table'] = "tianjin"
+			items['table'] = "dalian"
 			items['hash_data'] = checkdata(items['name'] + items['position'])
 
 			yield items
 
 		#翻页
-		if self.num <= 40:
+		if self.num <= 22:
 			self.num += 1
 			next_page_url = self.start_url + 'pg' + str(self.num)
 			print next_page_url
