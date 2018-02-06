@@ -54,7 +54,7 @@ class Count(object):
         writers = csv.writer(csvfile)
         self.df = pd.read_csv('./data_table/%s.csv' % city_name, encoding='utf-8')
         #总计
-        house_num = len(self.df) - 1
+        house_num = len(self.df)
         #售房类型
         business = len(self.df[self.df.type == "商业类"])
         residence = len(self.df[self.df.type == "住宅"])
