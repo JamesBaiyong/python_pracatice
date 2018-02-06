@@ -4,6 +4,7 @@ import csv
 import re
 import sys
 import json
+from collections import defaultdict
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -24,6 +25,7 @@ class ClearMoney(object):
             'tianjin',
             'wuhan',
             'xian']
+
     def run(self):
         for city_name in self.tables:
             self.clear(city_name)
@@ -51,9 +53,8 @@ class ClearMoney(object):
 
     def extract_money(self,house_price, house_area, house_name):
         # 清洗房价的格式,包括计算超预期数据
-        # money_list = []
-        from collections import defaultdict
-        money_dict = defaultdict(list)
+        money_list = []
+        # money_dict = defaultdict(list)
         house_info = len(house_price)
         for item in range(house_info):
             money_com = re.compile('(\d+)')
@@ -65,13 +66,13 @@ class ClearMoney(object):
                 money = int(re.match(money_com,house_price[item]).group(1))
                 if money <= 2000:
                     money = ((money * 10000) / area)
-                # money_list.append(money)
-                money_dict[house_name[item]].append(money)
+                money_list.append(money)
+                # money_dict[house_name[item]].append(money)
             except:
                 pass
-        # return money_list
-        money_json = json.dumps(money_dict, ensure_ascii = False, indent = 4)
-        return money_json
+        return money_list
+        # money_json = json.dumps(money_dict, ensure_ascii = False, indent = 4)
+        # return money_json
 
     def extract_address(self):
         pass
