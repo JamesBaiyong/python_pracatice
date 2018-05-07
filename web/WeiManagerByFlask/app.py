@@ -5,10 +5,24 @@ from flask import make_response
 from flask import abort # 处理错误
 from flask_script import Manager
 from flask_bootstrap import Bootstrap
+from flask_moment import Moment
+from datetime import datetime
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'you never can guess it'
+
 manager = Manager(app)
 bootstrap = Bootstrap(app)
+moment = Moment(app)
+
+
+class NameForm(FlaskForm):
+    name = StringField('What is your name?', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
 
 def load_user(id):
     user_dict = {
@@ -17,11 +31,14 @@ def load_user(id):
         }
     return user_dict.get(id,None)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
- response = make_response('<h1>This document carries a cookie!</h1>')
- response.set_cookie('answer', '42')
- return render_template('index.html')
+    name = None
+    form = NameForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        form.name.data = ''
+    return render_template('index.html', form=form, name=name)
 
 @app.route('/user/<id>')
 def get_user(id):
@@ -32,11 +49,11 @@ def get_user(id):
 
 @app.errorhandler(404)
 def page_not_found(e):
- return render_template('404.html'), 404
+    return render_template('404.html'), 404
 
 @app.errorhandler(500)
 def internal_server_error(e):
- return render_template('500.html'), 500
+    return render_template('500.html'), 500
 
 
 if __name__ == '__main__':
