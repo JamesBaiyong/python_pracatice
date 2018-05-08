@@ -13,12 +13,25 @@ from wtforms.validators import DataRequired
 from create_db import User,Role
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, MigrateCommand
+from flask_mail import Mail, Message
+from password.password import  MAIL_PASSWORD, MAIL_USERNAME, FLASK_ADMIN
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'you never can guess it'
+# 数据库配置
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dog:dogpass@localhost:3306/wei_manager'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# 邮件配置
+app.config['MAIL_SERVER'] = 'smtp.126.com'
+app.config['MAIL_PORT'] = 25
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = MAIL_USERNAME
+app.config['MAIL_PASSWORD'] = MAIL_PASSWORD
+app.config['FLASKY_MAIL_SENDER'] = 'Wei-Manager Admin <robotinfo@126.com>'
+app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = u'[小知]'
+app.config['FLASKY_ADMIN'] = FLASK_ADMIN
 
 db = SQLAlchemy(app)
 manager = Manager(app)
@@ -26,6 +39,8 @@ bootstrap = Bootstrap(app)
 moment = Moment(app)
 migrate = Migrate(app,db)
 manager.add_command('db', MigrateCommand)
+
+mail = Mail(app)
 
 class NameForm(FlaskForm):
     name = StringField('What is your name?', validators=[DataRequired()])
@@ -49,6 +64,9 @@ def index():
             db.session.add(user)
             db.session.commit()
             session['known'] = False
+            if app.config['FLASKY_ADMIN']:
+                send_email(app.config['FLASKY_ADMIN'], u'新用户',
+                           'mail/new_user', user=user)
         else:
             session['known'] = True
         session['name'] = form.name.data
@@ -76,6 +94,12 @@ def page_not_found(e):
 def internal_server_error(e):
     return render_template('500.html'), 500
 
+def send_email(to, subject, template, **kwargs):
+    msg = Message(app.config['FLASKY_MAIL_SUBJECT_PREFIX'] + ' ' + subject,
+                  sender=app.config['FLASKY_MAIL_SENDER'], recipients=[to])
+    msg.body = render_template(template + '.txt', **kwargs)
+    msg.html = render_template(template + '.html', **kwargs)
+    mail.send(msg)
 
 if __name__ == '__main__':
     manager.run()
