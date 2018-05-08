@@ -10,10 +10,15 @@ from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
+from create_db import User
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'you never can guess it'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dog:dogpass@localhost:3306/wei_manager'
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
+db = SQLAlchemy(app)
 manager = Manager(app)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
@@ -33,14 +38,20 @@ def load_user(id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
- form = NameForm()
- if form.validate_on_submit():
-    old_name = session.get('name')
-    if old_name is not None and old_name != form.name.data:
-        flash(u'修改名称成功！')
-    session['name'] = form.name.data
-    return redirect(url_for('index'))
- return render_template('index.html', form=form, name=session.get('name'))
+    form = NameForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.name.data).first()
+        if user is None:
+            user = User(username=form.name.data)
+            db.session.add(user)
+            db.session.commit()
+            session['known'] = False
+        else:
+            session['known'] = True
+        session['name'] = form.name.data
+        return redirect(url_for('index'))
+    return render_template('index.html', form=form, name=session.get('name'),
+                           known=session.get('known', False))
 
 @app.route('/user/<id>')
 def get_user(id):
