@@ -34,4 +34,8 @@ def create_app(config_name):
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
+    # 将文献信息部分加载到程序中
+    from .docinfo import doc as doc_blueprint
+    app.register_blueprint(doc_blueprint, url_prefix='/docinfo')
+
     return app
