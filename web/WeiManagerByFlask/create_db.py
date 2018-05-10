@@ -34,6 +34,7 @@ class User(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password_hash = db.Column(db.String(128))
     email = db.Column(db.String(64), unique=True, index=True)
+    confirmed = db.Column(db.Boolean, default=False)
 
     @property
     def password(self):
@@ -65,7 +66,7 @@ def create_users():
     db.session.commit()  # 提交会话到数据库
 
 if __name__ == '__main__':
-    manager.run()
-    # db.drop_all() # 删除有表
-    # db.create_all() # 创建表,表名为class名
-    # create_users() # 添加表中的数据
+    # manager.run()
+    db.drop_all() # 删除有表
+    db.create_all() # 创建表,表名为class名
+    create_users() # 添加表中的数据

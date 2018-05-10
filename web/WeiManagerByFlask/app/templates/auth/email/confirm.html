@@ -1,0 +1,8 @@
+<p>亲爱的 {{ user.username }},</p>
+<p>欢迎注册 <b>知微知彰微信公众号</b>!</p>
+<p>请点击链接确认您的账户 <a href="{{ url_for('auth.confirm', token=token, _external=True) }}">确认账户</a>.</p>
+<p>或者，您可以在浏览器的地址栏中粘贴下面的链接:</p>
+<p>{{ url_for('auth.confirm', token=token, _external=True) }}</p>
+<p>祝好,</p>
+<p>小知公众号</p>
+<p><small>提示: 回复此邮件不会有回复.</small></p>
