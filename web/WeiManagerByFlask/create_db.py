@@ -2,7 +2,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, session, redirect, url_for, flash
 from flask_script import Manager
-import os
+import os, xlrd
 from werkzeug.security import generate_password_hash, check_password_hash
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -50,6 +50,30 @@ class User(db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
+class BookInfo(db.Model):
+    __tablename__ = 'book_info'
+    id = db.Column(db.Integer, primary_key=True)
+    book_name = db.Column(db.String(128), unique=True, index=True)
+    author= db.Column(db.String(128),index=True)
+    number = db.Column(db.Integer)
+    type = db.Column(db.String(128))
+
+class PaperInfo(db.Model):
+    __tablename__ = 'paper_info'
+    id = db.Column(db.Integer, primary_key=True)
+    paper_title = db.Column(db.String(128), unique=True, index=True)
+    author= db.Column(db.String(128),index=True)
+    from_where = db.Column(db.String(128),index=True)
+    content = db.Column(db.String(128))
+
+class DegreeInfo(db.Model):
+    __tablename__ = 'degree_info'
+    id = db.Column(db.Integer, primary_key=True)
+    degree_title = db.Column(db.String(128), unique=True, index=True)
+    author= db.Column(db.String(128),index=True)
+    from_where = db.Column(db.String(128),index=True)
+    content = db.Column(db.String(128))
+
 
 def create_users():
     admin_role = Role(name='Admin')  # 实例化
@@ -65,8 +89,45 @@ def create_users():
                         user_david])  # 准备把对象写入数据库之前，先要将其添加到会话中，数据库会话db.session和Flask session对象没有关系，数据库会话也称事物
     db.session.commit()  # 提交会话到数据库
 
+def create_books():
+    # 从excel中读取数据,存入到数据库中
+    def read_excel():
+        # 打开文件
+        workbook = xlrd.open_workbook(u'./password/小知数据库.xlsx')
+        # 获取所有sheet
+        workbook.sheet_names()  # [u'sheet1', u'sheet2']
+        '''
+        sheet_book = workbook.sheet_by_index(1)
+        sheet_user = workbook.sheet_by_index(0)
+        sheet_dissertion = workbook.sheet_by_index(2)
+        sheet_paper = workbook.sheet_by_index(3)
+        sheet_notice = workbook.sheet_by_index(4)
+        sheet_inform = workbook.sheet_by_index(5)
+        sheet_lost = workbook.sheet_by_index(6)
+        '''
+        # 根据sheet索引或者名称获取sheet内容
+        book = workbook.sheet_by_index(1)
+        # sheet的名称，行数，列数
+        print book.name, book.nrows, book.ncols
+
+        # # 获取整行和整列的值（数组）
+        for nrows in range(79, book.nrows):
+            rows = book.row_values(nrows)  # 获取每一行内容
+            for i in rows:
+                print(i)
+            one_data = BookInfo(
+                id=int(rows[0]), book_name=rows[1].encode('utf8'),
+                author=rows[2].encode('utf8'), number=int(rows[3]),
+                type=rows[4].encode('utf8')
+            )
+            db.session.add_all([one_data])
+            db.session.commit()
+
+    read_excel()
+
 if __name__ == '__main__':
-    # manager.run()
-    db.drop_all() # 删除有表
-    db.create_all() # 创建表,表名为class名
-    create_users() # 添加表中的数据
+    manager.run()
+    # db.drop_all() # 删除有表
+    # db.create_all() # 创建表,表名为class名
+    # create_users() # 添加表中的数据
+    # create_books() #　写入书籍信息到表

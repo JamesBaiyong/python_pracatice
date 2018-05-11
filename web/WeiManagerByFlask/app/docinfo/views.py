@@ -1,13 +1,15 @@
 #encoding=utf-8
-from flask import render_template
-
+from flask import render_template, request
+from froms import BookListForm
 from . import doc
+from ..models import BookInfo, db
 
 @doc.route('/book_info')
 def booksinfo():
     # 图书信息
 
-    return render_template('docinfo/bookinfo.html')
+    books = BookInfo.query.all()
+    return render_template('docinfo/bookinfo.html', booklists=books)
 
 @doc.route('/paper_info')
 def paperinfo():

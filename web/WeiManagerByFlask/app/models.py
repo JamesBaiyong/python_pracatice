@@ -57,6 +57,31 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
+class BookInfo(db.Model):
+    __tablename__ = 'book_info'
+    id = db.Column(db.Integer, primary_key=True)
+    book_name = db.Column(db.String(128), unique=True, index=True)
+    author= db.Column(db.String(128),index=True)
+    number = db.Column(db.Integer)
+    type = db.Column(db.String(128))
+
+class PaperInfo(db.Model):
+    __tablename__ = 'paper_info'
+    id = db.Column(db.Integer, primary_key=True)
+    paper_title = db.Column(db.String(128), unique=True, index=True)
+    author= db.Column(db.String(128),index=True)
+    from_where = db.Column(db.String(128),index=True)
+    content = db.Column(db.String(128))
+
+class DegreeInfo(db.Model):
+    __tablename__ = 'degree_info'
+    id = db.Column(db.Integer, primary_key=True)
+    degree_title = db.Column(db.String(128), unique=True, index=True)
+    author= db.Column(db.String(128),index=True)
+    from_where = db.Column(db.String(128),index=True)
+    content = db.Column(db.String(128))
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
