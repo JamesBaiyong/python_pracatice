@@ -4,7 +4,7 @@
 <div class="page-header">
  <h1>学位论文信息查询</h1>
 </div>
-<table class="table table-hover">
+<table class="table table-hover" style="table-layout:fixed;">
     <thead>
         <th class="active">论文编号</th>
         <th class="active">题目</th>
@@ -13,26 +13,22 @@
         <th class='active'>摘要</th>
     </thead>
     <tbody>
-        {% for todo in todolists %}
-
-            <!-- tr -->
-            {% if todo.status %} <tr class="success">
-            {% else %} <tr class="info"> {% endif %}
-                <td>{{ loop.index }}</td>
-                <td>{{ todo.title }}</td>
-                <td>{{ todo.status }}</td>
-                <td>{{ todo.create_time }}</td>
-                <td>
-                    {% if todo.status %}
-                    <a href="{{ url_for('delete_todo_list', id=todo.id) }}" class="btn btn-danger" role ="button">删除</a>
-                    {% else %}
-                    <a href="{{ url_for('change_todo_list', id=todo.id) }}" class="btn btn-success" role ="button">修改</a>
-                    {% endif %}
-                </td>
-
-            </tr>
+        {% for degree in degreelists %}
+        {% if  degreelists.index(degree)%2 == 0 %}
+        <tr class="info">
+        {% else %}
+        <tr>
+        {% endif %}
+        <td>{{ degree.id }}</td>
+        <td>{{ degree.degree_title }}</td>
+        <td>{{ degree.author }}</td>
+        <td>{{ degree.from_where }}</td>
+        <td
+        style="overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;">{{degree.content }}</td>
+        </tr>
         {% endfor %}
-
     </tbody>
 </table>
 {% endblock %}

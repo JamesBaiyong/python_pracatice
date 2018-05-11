@@ -2,7 +2,7 @@
 from flask import render_template, request
 from froms import BookListForm
 from . import doc
-from ..models import BookInfo, db
+from ..models import BookInfo, PaperInfo, DegreeInfo
 
 @doc.route('/book_info')
 def booksinfo():
@@ -15,10 +15,12 @@ def booksinfo():
 def paperinfo():
     # 期刊论文信息
 
-    return render_template('docinfo/paperinfo.html')
+    paper = PaperInfo.query.all()
+    return render_template('docinfo/paperinfo.html', paperlists=paper)
 
 @doc.route('/degree_info')
 def degreeinfo():
     # 期刊论文信息
 
-    return render_template('docinfo/degreeinfo.html')
+    degree = DegreeInfo.query.all()
+    return render_template('docinfo/degreeinfo.html', degreelists=degree)

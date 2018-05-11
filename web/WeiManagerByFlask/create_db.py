@@ -64,7 +64,7 @@ class PaperInfo(db.Model):
     paper_title = db.Column(db.String(128), unique=True, index=True)
     author= db.Column(db.String(128),index=True)
     from_where = db.Column(db.String(128),index=True)
-    content = db.Column(db.String(128))
+    content = db.Column(db.Text())
 
 class DegreeInfo(db.Model):
     __tablename__ = 'degree_info'
@@ -72,7 +72,7 @@ class DegreeInfo(db.Model):
     degree_title = db.Column(db.String(128), unique=True, index=True)
     author= db.Column(db.String(128),index=True)
     from_where = db.Column(db.String(128),index=True)
-    content = db.Column(db.String(128))
+    content = db.Column(db.Text())
 
 
 def create_users():
@@ -125,9 +125,83 @@ def create_books():
 
     read_excel()
 
+def create_paper():
+    # 期刊数据写入
+
+    def read_excel():
+        # 打开文件
+        workbook = xlrd.open_workbook(u'./password/小知数据库.xlsx')
+        # 获取所有sheet
+        workbook.sheet_names()  # [u'sheet1', u'sheet2']
+        '''
+        sheet_book = workbook.sheet_by_index(1)
+        sheet_user = workbook.sheet_by_index(0)
+        sheet_dissertion = workbook.sheet_by_index(2)
+        sheet_paper = workbook.sheet_by_index(3)
+        sheet_notice = workbook.sheet_by_index(4)
+        sheet_inform = workbook.sheet_by_index(5)
+        sheet_lost = workbook.sheet_by_index(6)
+        '''
+        # 根据sheet索引或者名称获取sheet内容
+        paper = workbook.sheet_by_index(3)
+        # sheet的名称，行数，列数
+        print paper.name, paper.nrows, paper.ncols
+
+        # # 获取整行和整列的值（数组）
+        for nrows in range(9, paper.nrows):
+            rows = paper.row_values(nrows)  # 获取每一行内容
+            for i in rows:
+                print(i)
+            one_data = PaperInfo(
+                id=int(rows[0]), paper_title=rows[1].encode('utf8'),
+                author=rows[2].encode('utf8'), from_where=rows[3].encode('utf8'),
+                content=rows[4].encode('utf8')
+            )
+            db.session.add_all([one_data])
+            db.session.commit()
+    read_excel()
+
+def create_degree():
+    # 期刊数据写入
+
+    def read_excel():
+        # 打开文件
+        workbook = xlrd.open_workbook(u'./password/小知数据库.xlsx')
+        # 获取所有sheet
+        workbook.sheet_names()  # [u'sheet1', u'sheet2']
+        '''
+        sheet_book = workbook.sheet_by_index(1)
+        sheet_user = workbook.sheet_by_index(0)
+        sheet_dissertion = workbook.sheet_by_index(2)
+        sheet_paper = workbook.sheet_by_index(3)
+        sheet_notice = workbook.sheet_by_index(4)
+        sheet_inform = workbook.sheet_by_index(5)
+        sheet_lost = workbook.sheet_by_index(6)
+        '''
+        # 根据sheet索引或者名称获取sheet内容
+        paper = workbook.sheet_by_index(2)
+        # sheet的名称，行数，列数
+        print paper.name, paper.nrows, paper.ncols
+
+        # # 获取整行和整列的值（数组）
+        for nrows in range(1, paper.nrows):
+            rows = paper.row_values(nrows)  # 获取每一行内容
+            for i in rows:
+                print(i)
+            one_data = DegreeInfo(
+                id=int(rows[0]), degree_title=rows[1].encode('utf8'),
+                author=rows[2].encode('utf8'), from_where=rows[3].encode('utf8'),
+                content=rows[4].encode('utf8')
+            )
+            db.session.add_all([one_data])
+            db.session.commit()
+    read_excel()
+
 if __name__ == '__main__':
-    manager.run()
+    # manager.run()
     # db.drop_all() # 删除有表
     # db.create_all() # 创建表,表名为class名
     # create_users() # 添加表中的数据
     # create_books() #　写入书籍信息到表
+    # create_paper() # 写入期刊信息
+    create_degree() # 写入论文信息
