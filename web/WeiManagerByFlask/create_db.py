@@ -19,6 +19,7 @@ manager = Manager(app)
 
 class Role(db.Model):
     __tablename__ = 'roles'  # 定义表名
+    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
     id = db.Column(db.Integer, primary_key=True)  # 定义列对象
     name = db.Column(db.String(64), unique=True)
     user = db.relationship('User', backref='role', lazy='dynamic')  # 建立两表之间的关系，其中backref是定义反向关系，lazy是禁止自动执行查询
@@ -29,6 +30,7 @@ class Role(db.Model):
 
 class User(db.Model):
     __tablename__ = 'users'
+    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, index=True)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
@@ -52,6 +54,7 @@ class User(db.Model):
 
 class BookInfo(db.Model):
     __tablename__ = 'book_info'
+    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
     id = db.Column(db.Integer, primary_key=True)
     book_name = db.Column(db.String(128), unique=True, index=True)
     author= db.Column(db.String(128),index=True)
@@ -60,6 +63,7 @@ class BookInfo(db.Model):
 
 class PaperInfo(db.Model):
     __tablename__ = 'paper_info'
+    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
     id = db.Column(db.Integer, primary_key=True)
     paper_title = db.Column(db.String(128), unique=True, index=True)
     author= db.Column(db.String(128),index=True)
@@ -68,6 +72,7 @@ class PaperInfo(db.Model):
 
 class DegreeInfo(db.Model):
     __tablename__ = 'degree_info'
+    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
     id = db.Column(db.Integer, primary_key=True)
     degree_title = db.Column(db.String(128), unique=True, index=True)
     author= db.Column(db.String(128),index=True)
