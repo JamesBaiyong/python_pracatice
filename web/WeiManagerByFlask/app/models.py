@@ -24,6 +24,10 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     email = db.Column(db.String(64), unique=True, index=True)
     confirmed = db.Column(db.Boolean, default=False)
+    borrownum = db.Column(db.Integer)
+    borrowing = db.Column(db.Text)
+    cost = db.Column(db.Text)
+
 
 
     @property
@@ -81,6 +85,28 @@ class DegreeInfo(db.Model):
     from_where = db.Column(db.String(128),index=True)
     content = db.Column(db.String(128))
 
+class NoticeInfo(db.Model):
+    __tablename__ = 'notice_info'
+    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
+    id = db.Column(db.Integer, primary_key=True)
+    notice_title = db.Column(db.String(128), unique=True, index=True)
+    notice_content = db.Column(db.Text())
+    create_time = db.Column(db.DateTime, index=True)
+
+class InformInfo(db.Model):
+    __tablename__ = 'inform_info'
+    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
+    id = db.Column(db.Integer, primary_key=True)
+    inform_title = db.Column(db.String(128), unique=True, index=True)
+    inform_content = db.Column(db.Text())
+    create_time = db.Column(db.DateTime, index=True)
+
+class LostAndFoundInfo(db.Model):
+    __tablename__ = 'lostandfound_info'
+    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
+    id = db.Column(db.Integer, primary_key=True)
+    lost_content = db.Column(db.Text())
+    pub_time = db.Column(db.DateTime, index=True)
 
 @login_manager.user_loader
 def load_user(user_id):

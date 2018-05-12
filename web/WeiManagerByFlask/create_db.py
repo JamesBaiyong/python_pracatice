@@ -27,7 +27,6 @@ class Role(db.Model):
     def __repr__(self):
         return '<Role {}> '.format(self.name)
 
-
 class User(db.Model):
     __tablename__ = 'users'
     __table_args__ = {'mysql_collate': 'utf8_general_ci'}
@@ -37,6 +36,9 @@ class User(db.Model):
     password_hash = db.Column(db.String(128))
     email = db.Column(db.String(64), unique=True, index=True)
     confirmed = db.Column(db.Boolean, default=False)
+    borrownum = db.Column(db.Integer)
+    borrowing = db.Column(db.Text())
+    cost = db.Column(db.Text())
 
     @property
     def password(self):
@@ -79,6 +81,28 @@ class DegreeInfo(db.Model):
     from_where = db.Column(db.String(128),index=True)
     content = db.Column(db.Text())
 
+class NoticeInfo(db.Model):
+    __tablename__ = 'notice_info'
+    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
+    id = db.Column(db.Integer, primary_key=True)
+    notice_title = db.Column(db.String(128), unique=True, index=True)
+    notice_content = db.Column(db.Text())
+    create_time = db.Column(db.DateTime, index=True)
+
+class InformInfo(db.Model):
+    __tablename__ = 'inform_info'
+    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
+    id = db.Column(db.Integer, primary_key=True)
+    inform_title = db.Column(db.String(128), unique=True, index=True)
+    inform_content = db.Column(db.Text())
+    create_time = db.Column(db.DateTime, index=True)
+
+class LostAndFoundInfo(db.Model):
+    __tablename__ = 'lostandfound_info'
+    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
+    id = db.Column(db.Integer, primary_key=True)
+    lost_content = db.Column(db.Text())
+    pub_time = db.Column(db.DateTime, index=True)
 
 def create_users():
     admin_role = Role(name='Admin')  # 实例化
@@ -202,11 +226,161 @@ def create_degree():
             db.session.commit()
     read_excel()
 
+def create_notice():
+    # 公告数据写入
+
+    def read_excel():
+        # 打开文件
+        workbook = xlrd.open_workbook(u'./password/小知数据库.xlsx')
+        # 获取所有sheet
+        workbook.sheet_names()  # [u'sheet1', u'sheet2']
+        '''
+        sheet_book = workbook.sheet_by_index(1)
+        sheet_user = workbook.sheet_by_index(0)
+        sheet_dissertion = workbook.sheet_by_index(2)
+        sheet_paper = workbook.sheet_by_index(3)
+        sheet_notice = workbook.sheet_by_index(4)
+        sheet_inform = workbook.sheet_by_index(5)
+        sheet_lost = workbook.sheet_by_index(6)
+        '''
+        # 根据sheet索引或者名称获取sheet内容
+        paper = workbook.sheet_by_index(4)
+        # sheet的名称，行数，列数
+        print paper.name, paper.nrows, paper.ncols
+
+        # # 获取整行和整列的值（数组）
+        for nrows in range(1, paper.nrows):
+            rows = paper.row_values(nrows)  # 获取每一行内容
+            for i in rows:
+                print(i)
+            one_data = NoticeInfo(
+                id=int(rows[0]), notice_title=rows[1].encode('utf8'),
+                notice_content=rows[2].encode('utf8'), create_time=row[3].encode('utf8')
+            )
+            db.session.add_all([one_data])
+            db.session.commit()
+    read_excel()
+
+def create_inform():
+    # 公告数据写入
+
+    def read_excel():
+        # 打开文件
+        workbook = xlrd.open_workbook(u'./password/小知数据库.xlsx')
+        # 获取所有sheet
+        workbook.sheet_names()  # [u'sheet1', u'sheet2']
+        '''
+        sheet_book = workbook.sheet_by_index(1)
+        sheet_user = workbook.sheet_by_index(0)
+        sheet_dissertion = workbook.sheet_by_index(2)
+        sheet_paper = workbook.sheet_by_index(3)
+        sheet_notice = workbook.sheet_by_index(4)
+        sheet_inform = workbook.sheet_by_index(5)
+        sheet_lost = workbook.sheet_by_index(6)
+        '''
+        # 根据sheet索引或者名称获取sheet内容
+        paper = workbook.sheet_by_index(5)
+        # sheet的名称，行数，列数
+        print paper.name, paper.nrows, paper.ncols
+
+        # # 获取整行和整列的值（数组）
+        for nrows in range(1, paper.nrows):
+            rows = paper.row_values(nrows)  # 获取每一行内容
+            for i in rows:
+                print(i)
+            one_data = InformInfo(
+                id=int(rows[0]), inform_title=rows[1].encode('utf8'),
+                inform_content=rows[2].encode('utf8'), create_time=rows[3].encode('utf8')
+            )
+            db.session.add_all([one_data])
+            db.session.commit()
+    read_excel()
+
+def create_lost_and_found():
+    # 公告数据写入
+
+    def read_excel():
+        # 打开文件
+        workbook = xlrd.open_workbook(u'./password/小知数据库.xlsx')
+        # 获取所有sheet
+        workbook.sheet_names()  # [u'sheet1', u'sheet2']
+        '''
+        sheet_book = workbook.sheet_by_index(1)
+        sheet_user = workbook.sheet_by_index(0)
+        sheet_dissertion = workbook.sheet_by_index(2)
+        sheet_paper = workbook.sheet_by_index(3)
+        sheet_notice = workbook.sheet_by_index(4)
+        sheet_inform = workbook.sheet_by_index(5)
+        sheet_lost = workbook.sheet_by_index(6)
+        '''
+        # 根据sheet索引或者名称获取sheet内容
+        paper = workbook.sheet_by_index(6)
+        # sheet的名称，行数，列数
+        print paper.name, paper.nrows, paper.ncols
+
+        # # 获取整行和整列的值（数组）
+        for nrows in range(1, paper.nrows):
+            rows = paper.row_values(nrows)  # 获取每一行内容
+            for i in rows:
+                print(i)
+            one_data = LostAndFoundInfo(
+                id=int(rows[0]), lost_content=rows[1].encode('utf8'),
+                pub_time=rows[2].encode('utf8')
+            )
+            db.session.add_all([one_data])
+            db.session.commit()
+    read_excel()
+
+def add_user():
+    # 从表中添加个人信息
+
+    def read_excel():
+        # 打开文件
+        workbook = xlrd.open_workbook(u'./password/小知数据库.xlsx')
+        # 获取所有sheet
+        workbook.sheet_names()  # [u'sheet1', u'sheet2']
+        '''
+        sheet_book = workbook.sheet_by_index(1)
+        sheet_user = workbook.sheet_by_index(0)
+        sheet_dissertion = workbook.sheet_by_index(2)
+        sheet_paper = workbook.sheet_by_index(3)
+        sheet_notice = workbook.sheet_by_index(4)
+        sheet_inform = workbook.sheet_by_index(5)
+        sheet_lost = workbook.sheet_by_index(6)
+        '''
+        # 根据sheet索引或者名称获取sheet内容
+        paper = workbook.sheet_by_index(0)
+        # sheet的名称，行数，列数
+        print paper.name, paper.nrows, paper.ncols
+        u = User()
+        # # 获取整行和整列的值（数组）
+        for nrows in range(1, paper.nrows):
+            rows = paper.row_values(nrows)  # 获取每一行内容
+            for i in rows:
+                print(i)
+            u.password = str(rows[2]).encode('utf8')
+            one_data = User(
+                id=int(rows[0]), username=rows[1].encode('utf8'),
+                role_id=rows[6], password_hash=u.password_hash,
+                email=rows[1].encode('utf8')+'@flask.com', confirmed=1,
+                borrownum=int(rows[3]), borrowing=rows[4].encode('utf8'),
+                cost=rows[5]
+            )
+            print(one_data)
+
+            db.session.add_all([one_data])
+            db.session.commit()
+    read_excel()
+
 if __name__ == '__main__':
-    # manager.run()
+    manager.run()
     # db.drop_all() # 删除有表
     # db.create_all() # 创建表,表名为class名
     # create_users() # 添加表中的数据
     # create_books() #　写入书籍信息到表
     # create_paper() # 写入期刊信息
-    create_degree() # 写入论文信息
+    # create_degree() # 写入论文信息
+    # create_notice() # 写入公告信息
+    # create_inform() # 写入失物招领信息
+    # create_lost_and_found() # 写入失误招领信息
+    # add_user() # 添加用户数据信息
