@@ -38,4 +38,8 @@ def create_app(config_name):
     from .docinfo import doc as doc_blueprint
     app.register_blueprint(doc_blueprint, url_prefix='/docinfo')
 
+    # 将通知公告信息部分加载到程序中
+    from .notice import notice as notice_blueprint
+    app.register_blueprint(notice_blueprint, url_prefix='/notice')
+
     return app
