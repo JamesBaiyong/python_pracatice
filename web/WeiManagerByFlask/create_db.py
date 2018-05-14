@@ -255,7 +255,7 @@ def create_notice():
                 print(i)
             one_data = NoticeInfo(
                 id=int(rows[0]), notice_title=rows[1].encode('utf8'),
-                notice_content=rows[2].encode('utf8'), create_time=row[3].encode('utf8')
+                notice_content=rows[2].encode('utf8'), create_time=rows[3].encode('utf8')
             )
             db.session.add_all([one_data])
             db.session.commit()
