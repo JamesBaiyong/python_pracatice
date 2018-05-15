@@ -14,10 +14,14 @@
             <p>{{ user_info.borrowing }}</p>
             <p>借书日期：{{ user_info.borrowTime }}</p>
             <p>归还日期：{{ user_info.returnTime }}</p>
-                {% if '-' in user_info.cost %}
-                    <h6 style="color:red">费用：{{ user_info.cost }}</h6>
+                {% if not user_info.cost %}
+                    <h6 style="color:blue">费用：{{ user_info.cost }}</h6>
                 {% else %}
-                    <h6 style="color:green">费用：{{ user_info.cost }}</h6>
+                    {% if '-' in user_info.cost %}
+                        <h6 style="color:red">费用：{{ user_info.cost }}</h6>
+                    {% else %}
+                        <h6 style="color:green">费用：{{ user_info.cost }}</h6>
+                    {% endif %}
                 {% endif %}
         {% else %}
             <h1>只能查看所登录账户信息</h1>

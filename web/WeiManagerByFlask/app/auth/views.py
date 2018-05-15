@@ -19,6 +19,9 @@ def login():
             # 登录成功后的请求
             next = request.args.get('next')
             if next is None or not next.startswith('/'):
+                # 判断登录后的账户是否确认
+                if not current_user.confirmed:
+                    return render_template('auth/unconfirmed.html')
                 next = url_for('auth.users_info', id=user_id)
             return redirect(next)
         flash(u'用户名或密码错误.')

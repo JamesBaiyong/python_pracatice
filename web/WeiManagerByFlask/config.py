@@ -13,8 +13,8 @@ class Config(object):
     FLASKY_MAIL_SUBJECT_PREFIX = u'[小知]'
     FLASKY_ADMIN = FLASK_ADMIN
     MAIL_SERVER = 'smtp.126.com'
-    MAIL_PORT = 465,
-    MAIL_USE_SSL = True,
+    MAIL_PORT = 465
+    MAIL_USE_SSL = True
     MAIL_USERNAME = MAIL_USERNAME
     MAIL_PASSWORD = MAIL_PASSWORD
 
