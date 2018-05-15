@@ -27,6 +27,8 @@ class User(UserMixin, db.Model):
     borrownum = db.Column(db.Integer)
     borrowing = db.Column(db.Text)
     cost = db.Column(db.Text)
+    borrowTime = db.Column(db.Date())
+    returnTime = db.Column(db.Date())
 
 
 

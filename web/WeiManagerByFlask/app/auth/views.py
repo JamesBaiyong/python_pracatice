@@ -12,13 +12,14 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
+        user_id = user.id
         if user is not None and user.verify_password(form.password.data):
             # 判定邮箱和密码正确则登录账户
             login_user(user, form.remember_me.data)
             # 登录成功后的请求
             next = request.args.get('next')
             if next is None or not next.startswith('/'):
-                next = url_for('main.index')
+                next = url_for('auth.users_info', id=user_id)
             return redirect(next)
         flash(u'用户名或密码错误.')
     return render_template('auth/login.html', form=form)
@@ -89,3 +90,11 @@ def unconfirmed():
     if current_user.is_anonymous or current_user.confirmed:
         return redirect(url_for('main.index'))
     return render_template('auth/unconfirmed.html')
+
+@auth.route('/users')
+def users_info():
+    userid = request.args.get('id')
+    if userid:
+        users_info = User.query.filter_by(id=userid).first_or_404()
+        return render_template('auth/users.html', user_info=users_info, userid=int(userid))
+    return redirect(url_for('main.index'))

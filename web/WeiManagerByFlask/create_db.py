@@ -4,6 +4,7 @@ from flask import Flask, render_template, session, redirect, url_for, flash
 from flask_script import Manager
 import os, xlrd
 from werkzeug.security import generate_password_hash, check_password_hash
+import datetime
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -39,6 +40,8 @@ class User(db.Model):
     borrownum = db.Column(db.Integer)
     borrowing = db.Column(db.Text())
     cost = db.Column(db.Text())
+    borrowTime = db.Column(db.Date())
+    returnTime = db.Column(db.Date())
 
     @property
     def password(self):
@@ -361,10 +364,11 @@ def add_user():
             u.password = str(rows[2]).encode('utf8')
             one_data = User(
                 id=int(rows[0]), username=rows[1].encode('utf8'),
-                role_id=rows[6], password_hash=u.password_hash,
+                role_id=rows[8], password_hash=u.password_hash,
                 email=rows[1].encode('utf8')+'@flask.com', confirmed=1,
                 borrownum=int(rows[3]), borrowing=rows[4].encode('utf8'),
-                cost=rows[5]
+                cost=rows[7], borrowTime=rows[5].encode('utf8'),
+                returnTime=rows[6].encode('utf8')
             )
             print(one_data)
 

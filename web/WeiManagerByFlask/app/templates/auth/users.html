@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}小知-用户个人信息{%endblock%}
+
+{%block page_content %}
+<div class="page-header">
+    {% if current_user.is_authenticated %}
+        {% if userid == current_user.id %}
+            <h1>嘿,{{ current_user.username }}你好呀!</h1>
+            <h4 class="bg-info">用户名:{{ user_info.username}}</h4>
+            <h5 class="bg-success">借阅数:{{ user_info.borrownum }}</h5>
+            <p>借阅情况：</p>
+            <p>{{ user_info.borrowing }}</p>
+            <p>借书日期：{{ user_info.borrowTime }}</p>
+            <p>归还日期：{{ user_info.returnTime }}</p>
+                {% if '-' in user_info.cost %}
+                    <h6 style="color:red">费用：{{ user_info.cost }}</h6>
+                {% else %}
+                    <h6 style="color:green">费用：{{ user_info.cost }}</h6>
+                {% endif %}
+        {% else %}
+            <h1>只能查看所登录账户信息</h1>
+        {% endif %}
+    {% else %}
+        <h1>你好呀!登录才能获取小知的帮助哦^^</h1>
+    {% endif %}
+</div>
+{% endblock %}
