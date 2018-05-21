@@ -18,6 +18,14 @@ def login():
             login_user(user, form.remember_me.data)
             # 登录成功后的请求
             next = request.args.get('next')
+
+            if current_user.role_id == 1:
+                # 判断登录后的账户是否确认
+                if not current_user.confirmed:
+                    return render_template('auth/unconfirmed.html')
+                next = url_for('manager.manger_index')
+                return redirect(next)
+
             if next is None or not next.startswith('/'):
                 # 判断登录后的账户是否确认
                 if not current_user.confirmed:

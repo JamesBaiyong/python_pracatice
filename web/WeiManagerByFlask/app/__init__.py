@@ -42,4 +42,8 @@ def create_app(config_name):
     from .notice import notice as notice_blueprint
     app.register_blueprint(notice_blueprint, url_prefix='/notice')
 
+    # 将角色管理模块加载到程序中
+    from .manager import manager as manager_blueprint
+    app.register_blueprint(manager_blueprint, url_prefix='/manager')
+
     return app
