@@ -6,5 +6,28 @@
 {%block page_content %}
 <div class="page-header">
      <h1>用户管理</h1>
+     {{ wtf.quick_form(form) }}
+    {% if user_info%}
+        <div  style="background-color:#DDDDDD; height:100%;">
+        <h4>用户信息</h4>
+        <p>用户名：{{ user_info.username}}</p>
+        <p>借阅数:{{ user_info.borrownum }}</p>
+        <p>借阅情况：</p>
+            <p>{{ user_info.borrowing }}</p>
+            <p>借书日期：{{ user_info.borrowTime }}</p>
+            <p>归还日期：{{ user_info.returnTime }}</p>
+                {% if not user_info.cost %}
+                    <h6 style="color:blue">费用：{{ user_info.cost }}</h6>
+                {% else %}
+                    {% if '-' in user_info.cost %}
+                        <h6 style="color:red">费用：{{ user_info.cost }}</h6>
+                    {% else %}
+                        <h6 style="color:green">费用：{{ user_info.cost }}</h6>
+                    {% endif %}
+                {% endif %}
+        <a class='btn btn-warning ' href="/manager/change_user/{{user_info.id}}">修改用户信息</a>
+        <a class='btn btn-danger ' href="/manager/delete_user">删除该用户信息</a>
+    </div>
+    {% endif %}
  </div>
 {% endblock %}
