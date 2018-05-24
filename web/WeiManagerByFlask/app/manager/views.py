@@ -53,6 +53,22 @@ def chage_user(user_id):
         return render_template('manager/index.html')
     return render_template('manager/change_users.html', form=form, user=user)
 
+
+@manager.route('/delete_user/<user_id>',methods=['GET', 'POST'])
+@login_required
+def delete_user(user_id):
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    
+    user = User.query.filter_by(id=int(user_id)).first_or_404()
+    db.session.delete(user)
+    db.session.commit()
+    flash(u'你已经成功删除该用户所有信息')
+    return render_template('manager/index.html')
+
+
 @manager.route('/manager_notice')
 @login_required
 def manger_notice():

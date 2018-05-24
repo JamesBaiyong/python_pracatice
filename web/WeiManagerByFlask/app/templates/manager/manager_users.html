@@ -26,7 +26,18 @@
                     {% endif %}
                 {% endif %}
         <a class='btn btn-warning ' href="/manager/change_user/{{user_info.id}}">修改用户信息</a>
-        <a class='btn btn-danger ' href="/manager/delete_user">删除该用户信息</a>
+            <div class="btn-group">
+	<button type="button" class="btn btn-warning">删除用户信息</button>
+	<button type="button" class="btn btn-danger dropdown-toggle"
+			data-toggle="dropdown">
+		<span class="caret"></span>
+		<span class="sr-only">切换下拉菜单</span>
+	</button>
+	<ul class="dropdown-menu" role="menu">
+		<li><a class='btn btn-danger ' href="/manager/delete_user/{{user_info.id}}">确认删除该用户信息</a></li>
+	</ul>
+</div>
+
     </div>
     {% endif %}
  </div>
