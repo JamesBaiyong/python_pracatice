@@ -6,10 +6,47 @@
 {%block page_content %}
 <div class="page-header">
      <h1>管理菜单</h1>
- </div>
+
 <ul class="nav navbar-nav">
- <li><a href="/manager/manager_users">用户管理</a></li>
- <li><a href="/manager/manager_docinfo">文献管理</a></li>
- <li><a href="/manager/manager_notice">通知管理</a></li>
+ <!--<li><a href="/manager/manager_users">用户管理</a></li>-->
+ <!--<li><a href="/manager/manager_notice">通知管理</a></li>-->
  </ul>
+<div class="btn-group">
+<button type="button" class="btn btn-success">用户管理</button>
+<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span>
+	<span class="sr-only">切换下拉菜单</span>
+</button>
+	<ul class="dropdown-menu" role="menu">
+		<li><a class='btn btn-info ' href="/manager/manager_users">用户管理</a></li>
+	</ul>
+</div>
+
+<div class="btn-group">
+<button type="button" class="btn btn-success">通知公告</button>
+<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span>
+	<span class="sr-only">切换下拉菜单</span>
+</button>
+	<ul class="dropdown-menu" role="menu">
+		<li><a class='btn btn-info ' href="/manager/manager_notice">失物招领管理</a></li>
+        <li><a class='btn btn-info ' href="/manager/manager_notice">公共管理</a></li>
+        <li><a class='btn btn-info ' href="/manager/manager_notice">通知管理</a></li>
+	</ul>
+</div>
+
+<div class="btn-group">
+<button type="button" class="btn btn-success">文献信息</button>
+<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span>
+	<span class="sr-only">切换下拉菜单</span>
+</button>
+	<ul class="dropdown-menu" role="menu">
+		<li><a class='btn btn-info ' href="/manager/manager_docinfo">学位论文管理</a></li>
+        <li><a class='btn btn-info ' href="/manager/manager_docinfo">期刊论文管理</a></li>
+        <li><a class='btn btn-info ' href="/manager/manager_docinfo">图书信息管理</a></li>
+	</ul>
+</div>
+ <!--<li><a href="/manager/manager_docinfo"></a></li>-->
+ </div>
 {% endblock %}

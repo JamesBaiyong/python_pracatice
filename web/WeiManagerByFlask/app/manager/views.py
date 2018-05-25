@@ -61,7 +61,7 @@ def delete_user(user_id):
     if current_user.role_id != 1:
         flash(u'很抱歉,只有管理员才能访问相应页面')
         return redirect(url_for('main.index'))
-    
+
     user = User.query.filter_by(id=int(user_id)).first_or_404()
     db.session.delete(user)
     db.session.commit()
