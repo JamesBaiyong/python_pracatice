@@ -306,7 +306,6 @@ def change_degree(degree_id):
         return render_template('manager/index.html')
     return render_template('manager/change_degree_info.html', form=form)
 
-
 @manager.route('/add_degree',methods=['GET', 'POST'])
 @login_required
 def add_degree():
@@ -342,3 +341,76 @@ def delete_degree(notice_id):
     flash(u'你已经成功删除该条学位论文信息')
     inform_list = InformInfo.query.all()
     return render_template('manager/change_degree_info.html', form=form)
+
+
+@manager.route('/manager_paper', methods=['GET', 'POST'])
+@login_required
+def paper_info():
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    form = DocForm()
+    if form.validate_on_submit():
+        paper = PaperInfo.query.filter_by(paper_title=form.title.data).first()
+        if paper:
+            flash(u'期刊论文信息如下,请谨慎操作')
+            paper = PaperInfo.query.filter_by(id=paper.id).first_or_404()
+            return render_template('manager/manager_paper_info.html', form=form, paper=paper)
+        flash(u'数据库中不存在该论文')
+    return render_template('manager/manager_paper_info.html', form=form)
+
+
+@manager.route('/change_paper/<paper_id>', methods=['GET', 'POST'])
+@login_required
+def change_paper(paper_id):
+    print(type(paper_id))
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    form = ChangeDegreeForm()
+    paper = DegreeInfo.query.filter_by(id=int(paper_id)).first_or_404()
+    if form.validate_on_submit():
+        paper.paper_title = form.degree_title.data
+        paper.author = form.author.data
+        paper.from_where = form.from_where.data
+        paper.content = form.content.data
+        db.session.commit()
+        flash(u'你已经成功更新期刊论文信息')
+        return render_template('manager/index.html')
+    return render_template('manager/change_degree_info.html', form=form)
+
+@manager.route('/add_paper',methods=['GET', 'POST'])
+@login_required
+def add_paper():
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    form = ChangeDegreeForm()
+    degree = PaperInfo()
+    if form.validate_on_submit():
+        degree.paper_title = form.degree_title.data
+        degree.author = form.author.data
+        degree.from_where = form.from_where.data
+        degree.content = form.content.data
+        db.session.add(degree)
+        db.session.commit()
+        flash(u'你已经成功添加期刊论文所有信息')
+        return render_template('manager/index.html')
+    return render_template('manager/change_degree_info.html', form=form)
+
+@manager.route('/delete_paper/<notice_id>',methods=['GET', 'POST'])
+@login_required
+def delete_paper(notice_id):
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+
+    paper = PaperInfo.query.filter_by(id=int(notice_id)).first_or_404()
+    db.session.delete(paper)
+    db.session.commit()
+    flash(u'你已经成功删除该条期刊论文信息')
+    return render_template('manager/index.html')
