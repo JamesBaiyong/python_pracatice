@@ -1,6 +1,7 @@
 # encoding=utf-8
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, DateField, ValidationError, RadioField, IntegerField
+from wtforms import StringField, SubmitField, PasswordField, DateField, ValidationError, \
+    TextAreaField, IntegerField
 from wtforms.validators import DataRequired, Email, Length, Regexp, EqualTo
 from ..models import User
 
@@ -30,3 +31,8 @@ class UsersChangeForm(FlaskForm):
     def validate_name(self, field):
         if User.query.filter_by(username=field.data).first():
             raise ValidationError(u'此用户已存在')
+
+class LostAndFoundForm(FlaskForm):
+    lost_content = TextAreaField(u'失误招领正文')
+    date_time = DateField(u'发布时间')
+    submit = SubmitField(u'提交')

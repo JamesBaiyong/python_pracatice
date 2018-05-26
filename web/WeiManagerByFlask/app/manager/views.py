@@ -4,7 +4,7 @@ from flask import render_template, flash, url_for, redirect
 from flask_login import login_required, current_user
 from ..models import *
 from . import manager
-from froms import UsersForm, UsersChangeForm
+from froms import UsersForm, UsersChangeForm, LostAndFoundForm
 
 @manager.route('/manager_index')
 @login_required
@@ -73,6 +73,67 @@ def delete_user(user_id):
 @login_required
 def manger_notice():
     return render_template('manager/manager_notice.html')
+
+@manager.route('/manager_change_lost')
+@login_required
+def manger_lost():
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    lost = LostAndFoundInfo.query.all()
+    return render_template('manager/manager_change_lost.html',lostlists=lost)
+
+@manager.route('/change_lost/<lost_id>',methods=['GET', 'POST'])
+@login_required
+def change_lost(lost_id):
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    form = LostAndFoundForm()
+    lost = LostAndFoundInfo.query.filter_by(id=int(lost_id)).first_or_404()
+    if form.validate_on_submit():
+        lost.lost_content = form.lost_content.data
+        lost.pub_time =form.date_time.data
+        db.session.commit()
+        flash(u'你已经成功更新失物招领信息')
+        lost_list = LostAndFoundInfo.query.all()
+        return render_template('manager/manager_change_lost.html',lostlists=lost_list)
+    return render_template('manager/change_lost_info.html', form=form)
+
+@manager.route('/delete_lost/<lost_id>',methods=['GET', 'POST'])
+@login_required
+def delete_lost(lost_id):
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    lost = LostAndFoundInfo.query.filter_by(id=int(lost_id)).first_or_404()
+    db.session.delete(lost)
+    db.session.commit()
+    flash(u'你已经成功该条失物招领信息')
+    lost_list = LostAndFoundInfo.query.all()
+    return render_template('manager/manager_change_lost.html', lostlists=lost_list)
+
+@manager.route('/add_lost',methods=['GET', 'POST'])
+@login_required
+def add_lost():
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    form = LostAndFoundForm()
+    lost = LostAndFoundInfo()
+    if form.validate_on_submit():
+        lost.lost_content = form.lost_content.data
+        lost.pub_time =form.date_time.data
+        db.session.add(lost)
+        db.session.commit()
+        flash(u'你已经成功增加失物招领信息')
+        lost_list = LostAndFoundInfo.query.all()
+        return render_template('manager/manager_change_lost.html',lostlists=lost_list)
+    return render_template('manager/change_lost_info.html', form=form)
 
 @manager.route('/manager_docinfo')
 @login_required
