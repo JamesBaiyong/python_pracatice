@@ -4,7 +4,7 @@ from flask import render_template, flash, url_for, redirect
 from flask_login import login_required, current_user
 from ..models import *
 from . import manager
-from froms import UsersForm, UsersChangeForm, LostAndFoundForm, InformInfoForm
+from froms import UsersForm, UsersChangeForm, LostAndFoundForm, InformInfoForm, NoticeInfoForm
 import datetime
 
 @manager.route('/manager_index')
@@ -12,6 +12,7 @@ import datetime
 def manger_index():
     return render_template('manager/index.html')
 
+# 用户模块
 @manager.route('/manager_users',methods=['GET', 'POST'])
 @login_required
 def manger_users():
@@ -69,7 +70,7 @@ def delete_user(user_id):
     flash(u'你已经成功删除该用户所有信息')
     return render_template('manager/index.html')
 
-
+# 通知模块
 @manager.route('/manager_notice')
 @login_required
 def manger_notice():
@@ -198,6 +199,69 @@ def add_inform():
         inform_list = InformInfo.query.all()
         return render_template('manager/manager_change_inform.html', informlists=inform_list)
     return render_template('manager/change_inform_info.html', form=form)
+
+@manager.route('/manager_change_notice')
+@login_required
+def manger_change_notice():
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    notice = NoticeInfo.query.all()
+    return render_template('manager/manager_change_notice.html',noticelists=notice)
+
+@manager.route('/change_notice/<notice_id>',methods=['GET', 'POST'])
+@login_required
+def change_notice(notice_id):
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    form = NoticeInfoForm()
+    notice = NoticeInfo.query.filter_by(id=int(notice_id)).first_or_404()
+    if form.validate_on_submit():
+        notice.notice_title = form.title.data
+        notice.notice_content =form.content.data
+        notice.create_time = datetime.datetime.now()
+        db.session.commit()
+        flash(u'你已经成功更新信息')
+        notice_list = NoticeInfo.query.all()
+        return render_template('manager/manager_change_notice.html',noticelists=notice_list)
+    return render_template('manager/change_notice_info.html', form=form)
+
+@manager.route('/delete_notice/<notice_id>',methods=['GET', 'POST'])
+@login_required
+def delete_notice(notice_id):
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    notice = NoticeInfo.query.filter_by(id=int(notice_id)).first_or_404()
+    db.session.delete(notice)
+    db.session.commit()
+    flash(u'你已经成功该条失物招领信息')
+    notice_list = NoticeInfo.query.all()
+    return render_template('manager/manager_change_notice.html', noticelists=notice_list)
+
+@manager.route('/add_notice',methods=['GET', 'POST'])
+@login_required
+def add_notice():
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    form = NoticeInfoForm()
+    notice = NoticeInfo()
+    if form.validate_on_submit():
+        notice.notice_title = form.title.data
+        notice.notice_content =form.content.data
+        notice.create_time = datetime.datetime.now()
+        db.session.add(notice)
+        db.session.commit()
+        flash(u'你已经成功增加公告信息')
+        notice_list = NoticeInfo.query.all()
+        return render_template('manager/manager_change_notice.html', noticelists=notice_list)
+    return render_template('manager/change_notice_info.html', form=form)
 
 
 @manager.route('/manager_docinfo')

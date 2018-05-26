@@ -41,3 +41,8 @@ class InformInfoForm(FlaskForm):
     title = StringField(u'标题')
     content = TextAreaField(u'内容')
     submit = SubmitField(u'提交')
+
+class NoticeInfoForm(FlaskForm):
+    title = StringField(u'标题')
+    content = TextAreaField(u'内容')
+    submit = SubmitField(u'提交')

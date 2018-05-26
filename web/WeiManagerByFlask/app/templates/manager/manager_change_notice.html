@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}小知-后台管理{%endblock%}
+
+{%block page_content %}
+
+    <div class="page-header">
+ <h1 align="center">通知管理</h1>
+    {% for notice in noticelists %}
+    <h4 class="bg-info">{{ notice.notice_title }}</h4>
+    <p class="bg-success">{{ notice.notice_content }}</p>
+    <p class="bg-success">{{ notice.create_time }}</p>
+    <div class="active">
+        <a class='btn btn-warning ' href="/manager/change_notice/{{notice.id}}">修改信息</a>
+        <div class="btn-group">
+	    <button type="button" class="btn btn-warning">删除信息</button>
+	    <button type="button" class="btn btn-danger dropdown-toggle"
+			    data-toggle="dropdown">
+		    <span class="caret"></span>
+		    <span class="sr-only">切换下拉菜单</span>
+	    </button>
+	    <ul class="dropdown-menu" role="menu">
+		    <li><a class='btn btn-danger ' href="/manager/delete_notice/{{notice.id}}">确认删除信息</a></li>
+	    </ul>
+        <a class='btn btn-success' href="/manager/add_notice">增加信息</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
