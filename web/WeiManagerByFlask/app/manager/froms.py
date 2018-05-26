@@ -46,3 +46,14 @@ class NoticeInfoForm(FlaskForm):
     title = StringField(u'标题')
     content = TextAreaField(u'内容')
     submit = SubmitField(u'提交')
+
+class DocForm(FlaskForm):
+    title = StringField(u'标题或书名检索')
+    submit = SubmitField(u'提交')
+
+class ChangeDegreeForm(FlaskForm):
+    degree_title = StringField(u'题目')
+    author = StringField(u'作者')
+    from_where = StringField(u'出版社')
+    content = TextAreaField(u'摘要')
+    submit = SubmitField(u'提交')

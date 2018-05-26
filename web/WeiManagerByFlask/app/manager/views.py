@@ -4,7 +4,7 @@ from flask import render_template, flash, url_for, redirect
 from flask_login import login_required, current_user
 from ..models import *
 from . import manager
-from froms import UsersForm, UsersChangeForm, LostAndFoundForm, InformInfoForm, NoticeInfoForm
+from froms import UsersForm, UsersChangeForm, LostAndFoundForm, InformInfoForm, NoticeInfoForm, DocForm, ChangeDegreeForm
 import datetime
 
 @manager.route('/manager_index')
@@ -16,6 +16,10 @@ def manger_index():
 @manager.route('/manager_users',methods=['GET', 'POST'])
 @login_required
 def manger_users():
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
     form = UsersForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.title.data).first()
@@ -239,7 +243,7 @@ def delete_notice(notice_id):
     notice = NoticeInfo.query.filter_by(id=int(notice_id)).first_or_404()
     db.session.delete(notice)
     db.session.commit()
-    flash(u'你已经成功该条失物招领信息')
+    flash(u'你已经成功删除该条失物招领信息')
     notice_list = NoticeInfo.query.all()
     return render_template('manager/manager_change_notice.html', noticelists=notice_list)
 
@@ -264,7 +268,77 @@ def add_notice():
     return render_template('manager/change_notice_info.html', form=form)
 
 
-@manager.route('/manager_docinfo')
+# 图书信息
+@manager.route('/manager_docinfo', methods=['GET', 'POST'])
 @login_required
-def manger_docinfo():
-    return render_template('manager/manager_docinfo.html')
+def degree_info():
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    form = DocForm()
+    if form.validate_on_submit():
+        degree = DegreeInfo.query.filter_by(degree_title=form.title.data).first()
+        if degree:
+            flash(u'学位论文信息如下,请谨慎操作')
+            degree_info = DegreeInfo.query.filter_by(id=degree.id).first_or_404()
+            return render_template('manager/manager_degree_info.html', form=form, degree=degree_info)
+        flash(u'数据库中不存在该论文')
+    return render_template('manager/manager_degree_info.html', form=form)
+
+# 图书信息
+@manager.route('/change_degree/<degree_id>', methods=['GET', 'POST'])
+@login_required
+def change_degree(degree_id):
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    form = ChangeDegreeForm()
+    degree = DegreeInfo.query.filter_by(id=int(degree_id)).first_or_404()
+    if form.validate_on_submit():
+        degree.degree_title = form.degree_title.data
+        degree.author = form.author.data
+        degree.from_where = form.from_where.data
+        degree.content = form.content.data
+        db.session.commit()
+        flash(u'你已经成功更新学位论文所有信息')
+        return render_template('manager/index.html')
+    return render_template('manager/change_degree_info.html', form=form)
+
+
+@manager.route('/add_degree',methods=['GET', 'POST'])
+@login_required
+def add_degree():
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    form = ChangeDegreeForm()
+    degree = DegreeInfo()
+    if form.validate_on_submit():
+        degree.degree_title = form.degree_title.data
+        degree.author = form.author.data
+        degree.from_where = form.from_where.data
+        degree.content = form.content.data
+        db.session.add(degree)
+        db.session.commit()
+        flash(u'你已经成功添加学位论文所有信息')
+        return render_template('manager/index.html')
+    return render_template('manager/change_degree_info.html', form=form)
+
+@manager.route('/delete_degree/<notice_id>',methods=['GET', 'POST'])
+@login_required
+def delete_degree(notice_id):
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+
+    form = DocForm()
+    degree = DegreeInfo.query.filter_by(id=int(notice_id)).first_or_404()
+    db.session.delete(degree)
+    db.session.commit()
+    flash(u'你已经成功删除该条学位论文信息')
+    inform_list = InformInfo.query.all()
+    return render_template('manager/change_degree_info.html', form=form)
