@@ -4,7 +4,8 @@ from flask import render_template, flash, url_for, redirect
 from flask_login import login_required, current_user
 from ..models import *
 from . import manager
-from froms import UsersForm, UsersChangeForm, LostAndFoundForm
+from froms import UsersForm, UsersChangeForm, LostAndFoundForm, InformInfoForm
+import datetime
 
 @manager.route('/manager_index')
 @login_required
@@ -134,6 +135,70 @@ def add_lost():
         lost_list = LostAndFoundInfo.query.all()
         return render_template('manager/manager_change_lost.html',lostlists=lost_list)
     return render_template('manager/change_lost_info.html', form=form)
+
+@manager.route('/manager_change_inform')
+@login_required
+def manger_inform():
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    inform = InformInfo.query.all()
+    return render_template('manager/manager_change_inform.html',informlists=inform)
+
+@manager.route('/change_inform/<inform_id>',methods=['GET', 'POST'])
+@login_required
+def change_inform(inform_id):
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    form = InformInfoForm()
+    inform = InformInfo.query.filter_by(id=int(inform_id)).first_or_404()
+    if form.validate_on_submit():
+        inform.inform_title = form.title.data
+        inform.inform_content =form.content.data
+        inform.create_time = datetime.datetime.now()
+        db.session.commit()
+        flash(u'你已经成功更新信息')
+        inform_list = InformInfo.query.all()
+        return render_template('manager/manager_change_inform.html',informlists=inform_list)
+    return render_template('manager/change_inform_info.html', form=form)
+
+@manager.route('/delete_inform/<lost_id>',methods=['GET', 'POST'])
+@login_required
+def delete_inform(lost_id):
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    inform = InformInfo.query.filter_by(id=int(lost_id)).first_or_404()
+    db.session.delete(inform)
+    db.session.commit()
+    flash(u'你已经成功该条失物招领信息')
+    inform_list = InformInfo.query.all()
+    return render_template('manager/manager_change_inform.html', informlists=inform_list)
+
+@manager.route('/add_inform',methods=['GET', 'POST'])
+@login_required
+def add_inform():
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    form = InformInfoForm()
+    inform = InformInfo()
+    if form.validate_on_submit():
+        inform.inform_title = form.title.data
+        inform.inform_content =form.content.data
+        inform.create_time = datetime.datetime.now()
+        db.session.add(inform)
+        db.session.commit()
+        flash(u'你已经成功增加失物招领信息')
+        inform_list = InformInfo.query.all()
+        return render_template('manager/manager_change_inform.html', informlists=inform_list)
+    return render_template('manager/change_inform_info.html', form=form)
+
 
 @manager.route('/manager_docinfo')
 @login_required

@@ -36,3 +36,8 @@ class LostAndFoundForm(FlaskForm):
     lost_content = TextAreaField(u'失误招领正文')
     date_time = DateField(u'发布时间')
     submit = SubmitField(u'提交')
+
+class InformInfoForm(FlaskForm):
+    title = StringField(u'标题')
+    content = TextAreaField(u'内容')
+    submit = SubmitField(u'提交')
