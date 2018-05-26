@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}小知-后台管理{%endblock%}
+
+{%block page_content %}
+<div class="page-header">
+     <h1>图书论文管理</h1>
+     {{ wtf.quick_form(form) }}
+    <a class='btn btn-success ' href="/manager/add_book">增加图书信息</a>
+    {% if book%}
+        <div  style="background-color:#DDDDDD; height:100%;">
+        <h4>图书信息</h4>
+        <p>书名:{{ book.book_name}}</p>
+        <p>作者:{{ book.author }}</p>
+        <p>分类:{{ book.type }}</p>
+        <a class='btn btn-warning ' href="/manager/change_book/{{book.id}}">修改图书信息</a>
+            <div class="btn-group">
+	        <button type="button" class="btn btn-warning">删除图书信息</button>
+	        <button type="button" class="btn btn-danger dropdown-toggle"
+			data-toggle="dropdown">
+		<span class="caret"></span>
+		<span class="sr-only">切换下拉菜单</span>
+	</button>
+	<ul class="dropdown-menu" role="menu">
+		<li><a class='btn btn-danger ' href="/manager/delete_book/{{book.id}}">确认删除图书信息</a></li>
+	</ul>
+</div>
+
+    </div>
+    {% endif %}
+ </div>
+{% endblock %}
