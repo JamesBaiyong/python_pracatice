@@ -57,3 +57,10 @@ class ChangeDegreeForm(FlaskForm):
     from_where = StringField(u'出版社')
     content = TextAreaField(u'摘要')
     submit = SubmitField(u'提交')
+
+class BookForm(FlaskForm):
+    book_name = StringField(u'书名')
+    author = StringField(u'作者')
+    number = IntegerField(u'存量')
+    book_type = StringField(u'类别')
+    submit = SubmitField(u'提交')

@@ -4,7 +4,7 @@ from flask import render_template, flash, url_for, redirect
 from flask_login import login_required, current_user
 from ..models import *
 from . import manager
-from froms import UsersForm, UsersChangeForm, LostAndFoundForm, InformInfoForm, NoticeInfoForm, DocForm, ChangeDegreeForm
+from froms import UsersForm, UsersChangeForm, LostAndFoundForm, InformInfoForm, NoticeInfoForm, DocForm, ChangeDegreeForm,BookForm
 import datetime
 
 @manager.route('/manager_index')
@@ -360,11 +360,9 @@ def paper_info():
         flash(u'数据库中不存在该论文')
     return render_template('manager/manager_paper_info.html', form=form)
 
-
 @manager.route('/change_paper/<paper_id>', methods=['GET', 'POST'])
 @login_required
 def change_paper(paper_id):
-    print(type(paper_id))
     # 增加角色判断,以防普通用户对别的用户做修改
     if current_user.role_id != 1:
         flash(u'很抱歉,只有管理员才能访问相应页面')
@@ -411,6 +409,76 @@ def delete_paper(notice_id):
 
     paper = PaperInfo.query.filter_by(id=int(notice_id)).first_or_404()
     db.session.delete(paper)
+    db.session.commit()
+    flash(u'你已经成功删除该条期刊论文信息')
+    return render_template('manager/index.html')
+
+@manager.route('/manager_book', methods=['GET', 'POST'])
+@login_required
+def book_info():
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    form = DocForm()
+    if form.validate_on_submit():
+        book = BookInfo.query.filter_by(book_name=form.title.data).first()
+        if book:
+            flash(u'期刊图书如下,请谨慎操作')
+            book = BookInfo.query.filter_by(id=book.id).first_or_404()
+            return render_template('manager/manager_book_info.html', form=form, book=book)
+        flash(u'数据库中不存在该图书')
+    return render_template('manager/manager_book_info.html', form=form)
+
+@manager.route('/change_book/<book_id>', methods=['GET', 'POST'])
+@login_required
+def change_book(book_id):
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    form = BookForm()
+    book = BookInfo.query.filter_by(id=int(book_id)).first_or_404()
+    if form.validate_on_submit():
+        book.book_name = form.book_name.data
+        book.author = form.author.data
+        book.number = form.number.data
+        book.type = form.book_type.data
+        db.session.commit()
+        flash(u'你已经成功更新图书信息')
+        return render_template('manager/index.html')
+    return render_template('manager/change_book_info.html', form=form)
+
+@manager.route('/add_book',methods=['GET', 'POST'])
+@login_required
+def add_book():
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+    form = BookForm()
+    book = BookInfo()
+    if form.validate_on_submit():
+        book.book_name = form.book_name.data
+        book.author = form.author.data
+        book.number = form.number.data
+        book.type = form.book_type.data
+        db.session.add(book)
+        db.session.commit()
+        flash(u'你已经成功添加图书信息')
+        return render_template('manager/index.html')
+    return render_template('manager/change_book_info.html', form=form)
+
+@manager.route('/delete_book/<book_id>',methods=['GET', 'POST'])
+@login_required
+def delete_book(book_id):
+    # 增加角色判断,以防普通用户对别的用户做修改
+    if current_user.role_id != 1:
+        flash(u'很抱歉,只有管理员才能访问相应页面')
+        return redirect(url_for('main.index'))
+
+    book = BookInfo.query.filter_by(id=int(book_id)).first_or_404()
+    db.session.delete(book)
     db.session.commit()
     flash(u'你已经成功删除该条期刊论文信息')
     return render_template('manager/index.html')
