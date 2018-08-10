@@ -387,4 +387,4 @@ if __name__ == '__main__':
     # create_notice() # 写入公告信息
     # create_inform() # 写入失物招领信息
     # create_lost_and_found() # 写入失误招领信息
-    # add_user() # 添加用户数据信息
+    add_user() # 添加用户数据信息

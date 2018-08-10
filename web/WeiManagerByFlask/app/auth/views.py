@@ -18,6 +18,7 @@ def login():
             login_user(user, form.remember_me.data)
             # 登录成功后的请求
             next = request.args.get('next')
+            print(current_user.username)
 
             if current_user.role_id == 1:
                 # 判断登录后的账户是否确认
