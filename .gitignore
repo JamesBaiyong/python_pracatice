@@ -43,3 +43,6 @@ venv
 *.cfg
 *.xlsx
 .idea
+password/
+deploy.py
+.ipynb_checkpoints
