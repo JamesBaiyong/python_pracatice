@@ -7,43 +7,21 @@ class ListNode(object):
 
 class Solution(object):
     def addTwoNumbers(self, l1, l2):
-        """
-        :type l1: ListNode
-        :type l2: ListNode
-        :rtype: ListNode
-        """
-        result_node = None
-        to_add = 0
-        flag_node = ListNode
-        while 1:
-            if l1.val == -1:
-                l1.val = 0
-            if l2.val == -1:
-                l2.val = 0
-
-            if l1.val == 0 and l2.val == 0 and l1.next == None and l2.next == None:
-                break
-            else:
-                to_sum = (l1.val + l2.val + to_add) % 10
-                to_add = (l1.val + l2.val + to_add) / 10
-                tmp_node = ListNode(to_sum)
-                if result_node == None:
-                    result_node = tmp_node
-                    flag_node = result_node
-                else:
-                    flag_node.next = tmp_node
-                    flag_node = flag_node.next
-
-            if l1.next != None:
+        dummy, flag = ListNode(0), 0
+        head = dummy
+        while flag or l1 or l2:
+            node = ListNode(flag)
+            if l1:
+                node.val += l1.val
                 l1 = l1.next
-            else:
-                l1.val = -1
-
-            if l2.next != None:
+            if l2:
+                node.val += l2.val
                 l2 = l2.next
-            else:
-                l2.val = -1
-        return result_node
+            flag = node.val / 10
+            node.val %= 10
+            head.next = node
+            head = head.next
+        return dummy.next
 
 
 def listToListNode(input):
@@ -63,20 +41,28 @@ def listNodeToInt(node):
         return []
     tmp_list = []
     while node:
-        tmp_list.append(node.val)
+        tmp_list.append(node)
         node = node.next
     return tmp_list
 
 
 
 def main():
-    line = [2,3,4]
+    line = [0]
     l1 = listToListNode(line)
-    line = [3,4,6]
+    line = [0,3,5]
     l2 = listToListNode(line)
     ret = Solution().addTwoNumbers(l1, l2)
     out = listNodeToInt(ret)
     print out
+    while 1:
+        tmp = []
+        for i in out:
+            tmp.append(i.val)
+            if i.next:
+                continue
+        print(tmp)
+        break
 
 if __name__ == '__main__':
     main()
