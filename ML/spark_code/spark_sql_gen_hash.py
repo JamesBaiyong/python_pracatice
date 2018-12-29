@@ -5,7 +5,6 @@ import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
-
 def gen_hash_id(c1, c2, c3, c4, c5, c6, c7, c8, c9, c10):
     # 组合字段生成hash id
     lists = [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10]
@@ -25,15 +24,33 @@ def gen_hash_id(c1, c2, c3, c4, c5, c6, c7, c8, c9, c10):
     hash_id = hashlib.md5(strs).hexdigest()
     return hash_id
 
+def clear_old_name(c):
+    if c:
+        if c.encode("utf-8")[0] == ',':
+            return c[1:]
+    return c
 
 sc = SparkSession.builder\
     .appName('test') \
     .getOrCreate()
 
 scc = sc.sparkContext
-file = "./test_data/nh_gh_com.csv"
+sqlContext = SQLContext(sparkContext=scc)
+
+sqlContext.registerFunction("clear_old_name", clear_old_name)
+
+file = "./test_data/nh_gh_com1.csv"
 df01 = sc.read.load(file, format='csv', delimiter=',', header=True)
-df01.createOrReplaceTempView("nh_table")
+df01.createOrReplaceTempView("nh_table_1")
+
+dff = sc.sql("select id,enterprise_name,clear_old_name(history_name) as history_name,english_name,"
+             "web_site,social_credit_identifier,org_code,legal_person,"
+             "es_date,enterprise_status,reg_cap,reg_cap_cur,address,"
+             "enterprise_type,operate_scope,reg_org,open_from,open_to,"
+             "audit_date,death_date,revoke_date,cancel_date,coordinate,"
+             "industry_phy,industry_phy_code,industry_sec,"
+             "industry_sec_code,province from nh_table_1")
+dff.createOrReplaceTempView("nh_table")
 
 
 df02 = sc.sql(
@@ -44,7 +61,6 @@ df02.createOrReplaceTempView('t2')
 df02.show(10)
 
 # 注册函数
-sqlContext = SQLContext(sparkContext=scc)
 sqlContext.registerFunction("gen_hash_id", gen_hash_id)
 df03 = sc.sql('select enterprise_name,'
               ' gen_hash_id(address,death_date,enterprise_name,'
