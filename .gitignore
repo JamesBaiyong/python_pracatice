@@ -46,3 +46,4 @@ venv
 password/
 deploy.py
 .ipynb_checkpoints
+.vscode
