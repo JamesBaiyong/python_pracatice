@@ -71,7 +71,7 @@ def data_deal_missing():
     data_rtf_missing_drop_dup_df = data_rtf_missing_drop_na_df.drop_duplicates()
     # 保持处理完缺失值的数据
     print('另存数据')
-    data_rtf_missing_drop_dup_df.to_csv('./data/01_data_perproces/missing_data_tring.csv')
+    data_rtf_missing_drop_dup_df.to_csv('./data/01_data_perproces/missing_data_tring.csv', index=False)
     # 保存一份处理完缺失值的分布情况的数据
     data_rtf_missing_drop_dup_df.describe().to_csv('./data/01_data_perproces/missing_data_describe.csv')
 
@@ -104,14 +104,14 @@ def tran_test_data_split(data):
     train = pd.concat([Y_train, X_train], axis=1)
     test = pd.concat([Y_test, X_test], axis=1)
     # clasTest = test.groupby('SeriousDlqin2yrs')['SeriousDlqin2yrs'].count()
-    train.to_csv('./data/02_data_exploration/train_data.csv',index=False)
-    test.to_csv('./data/02_data_exploration/test_data.csv',index=False)
+    train.to_csv('./data/02_data_exploration/train_data.csv', index=False)
+    test.to_csv('./data/02_data_exploration/test_data.csv', index=False)
 
 
 
 if __name__ == '__main__':
     # pandas_decribe()
-    # data_deal_missing()
+    data_deal_missing()
     df_to_split = data_deal_abnormal()
     tran_test_data_split(df_to_split)
 
