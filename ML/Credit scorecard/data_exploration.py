@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats.stats as stats
 import seaborn as sns
+from pandas import Series
 
 def auto_build_bin(Y, X, n=20):
     """
@@ -67,7 +68,6 @@ def self_build_bin(Y, X, cut):
     print(d4)
     woe = list(d4['woe'].round(3))
     return d4, iv ,woe
-    
 
 def build_histogram(iv_list, index_list):
     """
@@ -116,45 +116,95 @@ def all_np(arr):
         result[k] = v
     return result
 
-def read_data():
+def read_data(data_type='train'):
     """
     加载数据
     """
-    data = pd.read_csv('./data/02_data_exploration/train_data.csv')
+    data = pd.read_csv('./data/02_data_exploration/%s_data.csv'%data_type)
     return data
 
+def replace_woe(series, cut, score):
+    """
+    woe转换
+    """
+    list = []
+    i = 0
+    while i < len(series):
+        value = series[i]
+        j = len(cut) - 2
+        m = len(cut) - 2
+        while j >= 0:
+            if value >= cut[j]:
+                j = -1
+            else:
+                j -= 1
+                m -= 1
+        list.append(score[m])
+        i += 1
+    return list
 
 def main():
     # 绘制相关性图
     # build_correlations()
-    data = read_data()
+    data = read_data(data_type='train')
 
     # 最优分箱
     df_x2, iv_x2, cut_x2, woe_x2 = auto_build_bin(data['SeriousDlqin2yrs'], data['age'], n=10) # 年龄
-    df_x1, iv_x1, cut_x1, woe_1 = auto_build_bin(data['SeriousDlqin2yrs'], data['RevolvingUtilizationOfUnsecuredLines'], n=10) # 无担保放款的循环利用
-    df_x4, iv_x4, cut_x4, woe_4 = auto_build_bin(data['SeriousDlqin2yrs'], data['DebtRatio'], n=20) # 负债情况
-    df_x5, iv_x5, cut_x5, woe_5 = auto_build_bin(data['SeriousDlqin2yrs'], data['MonthlyIncome'], n=10) # 月收入
+    df_x1, iv_x1, cut_x1, woe_x1 = auto_build_bin(data['SeriousDlqin2yrs'], data['RevolvingUtilizationOfUnsecuredLines'], n=10) # 无担保放款的循环利用
+    df_x4, iv_x4, cut_x4, woe_x4 = auto_build_bin(data['SeriousDlqin2yrs'], data['DebtRatio'], n=20) # 负债情况
+    df_x5, iv_x5, cut_x5, woe_x5 = auto_build_bin(data['SeriousDlqin2yrs'], data['MonthlyIncome'], n=10) # 月收入
 
     # 自定义分箱
     pinf = float('inf')#正无穷大
     ninf = float('-inf')#负无穷大
-    cutx3 = [ninf, 0, 1, 3, 5, pinf]
-    cutx6 = [ninf, 1, 2, 3, 5, pinf]
-    cutx7 = [ninf, 0, 1, 3, 5, pinf]
-    cutx8 = [ninf, 0,1,2, 3, pinf]
-    cutx9 = [ninf, 0, 1, 3, pinf]
-    cutx10 = [ninf, 0, 1, 2, 3, 5, pinf]
-    df_x3, iv_x3, woe_x3 = self_build_bin(data.SeriousDlqin2yrs, data['NumberOfTime30-59DaysPastDueNotWorse'], cutx3)
-    df_x6, iv_x6, woe_x6= self_build_bin(data.SeriousDlqin2yrs, data['NumberOfOpenCreditLinesAndLoans'], cutx6)
-    df_x7, iv_x7, woe_x7 = self_build_bin(data.SeriousDlqin2yrs, data['NumberOfTimes90DaysLate'], cutx7)
-    df_x8, iv_x8, woe_x8 = self_build_bin(data.SeriousDlqin2yrs, data['NumberRealEstateLoansOrLines'], cutx8)
-    df_x9, iv_x9, woe_x9 = self_build_bin(data.SeriousDlqin2yrs, data['NumberOfTime60-89DaysPastDueNotWorse'], cutx9)
-    df_x10, iv_x10, woe_x10 = self_build_bin(data.SeriousDlqin2yrs, data['NumberOfDependents'], cutx10)
+    cut_x3 = [ninf, 0, 1, 3, 5, pinf]
+    cut_x6 = [ninf, 1, 2, 3, 5, pinf]
+    cut_x7 = [ninf, 0, 1, 3, 5, pinf]
+    cut_x8 = [ninf, 0,1,2, 3, pinf]
+    cut_x9 = [ninf, 0, 1, 3, pinf]
+    cut_x10 = [ninf, 0, 1, 2, 3, 5, pinf]
+    df_x3, iv_x3, woe_x3 = self_build_bin(data.SeriousDlqin2yrs, data['NumberOfTime30-59DaysPastDueNotWorse'], cut_x3)
+    df_x6, iv_x6, woe_x6= self_build_bin(data.SeriousDlqin2yrs, data['NumberOfOpenCreditLinesAndLoans'], cut_x6)
+    df_x7, iv_x7, woe_x7 = self_build_bin(data.SeriousDlqin2yrs, data['NumberOfTimes90DaysLate'], cut_x7)
+    df_x8, iv_x8, woe_x8 = self_build_bin(data.SeriousDlqin2yrs, data['NumberRealEstateLoansOrLines'], cut_x8)
+    df_x9, iv_x9, woe_x9 = self_build_bin(data.SeriousDlqin2yrs, data['NumberOfTime60-89DaysPastDueNotWorse'], cut_x9)
+    df_x10, iv_x10, woe_x10 = self_build_bin(data.SeriousDlqin2yrs, data['NumberOfDependents'], cut_x10)
     iv_list= [iv_x1,iv_x2, iv_x3, iv_x4, iv_x5, iv_x6, iv_x7, iv_x8, iv_x9, iv_x10]
     index_list = ['x1','x2','x3','x4','x5','x6','x7','x8','x9','x10']
 
     # 绘制IV值柱状图
-    build_histogram(iv_list, index_list)
+    # build_histogram(iv_list, index_list)
+
+    # WOE转换-train_data
+    data['age'] = Series(replace_woe(data['age'], cut_x2, woe_x2))
+    data['RevolvingUtilizationOfUnsecuredLines'] = Series(replace_woe(data['RevolvingUtilizationOfUnsecuredLines'], cut_x1, woe_x1))
+    data['DebtRatio'] = Series(replace_woe(data['DebtRatio'], cut_x4, woe_x4))
+    data['MonthlyIncome'] = Series(replace_woe(data['MonthlyIncome'], cut_x5, woe_x5))
+    data['NumberOfTime30-59DaysPastDueNotWorse'] = Series(replace_woe(data['NumberOfTime30-59DaysPastDueNotWorse'], cut_x3, woe_x3))
+    data['NumberOfOpenCreditLinesAndLoans'] = Series(replace_woe(data['NumberOfOpenCreditLinesAndLoans'], cut_x6, woe_x6))
+    data['NumberOfTimes90DaysLate'] = Series(replace_woe(data['NumberOfTimes90DaysLate'], cut_x7, woe_x7))
+    data['NumberRealEstateLoansOrLines'] = Series(replace_woe(data['NumberRealEstateLoansOrLines'], cut_x8, woe_x8))
+    data['NumberOfTime60-89DaysPastDueNotWorse'] = Series(replace_woe(data['NumberOfTime60-89DaysPastDueNotWorse'], cut_x9, woe_x9))
+    data['NumberOfDependents'] = Series(replace_woe(data['NumberOfDependents'], cut_x10, woe_x10))
+    data.to_csv('./data/03_data_model/train_data_woe.csv', index=False)
+
+    # WOE转换-test_data
+    data = read_data(data_type='test')
+    data['age'] = Series(replace_woe(data['age'], cut_x2, woe_x2))
+    data['RevolvingUtilizationOfUnsecuredLines'] = Series(
+        replace_woe(data['RevolvingUtilizationOfUnsecuredLines'], cut_x1, woe_x1))
+    data['DebtRatio'] = Series(replace_woe(data['DebtRatio'], cut_x4, woe_x4))
+    data['MonthlyIncome'] = Series(replace_woe(data['MonthlyIncome'], cut_x5, woe_x5))
+    data['NumberOfTime30-59DaysPastDueNotWorse'] = Series(
+        replace_woe(data['NumberOfTime30-59DaysPastDueNotWorse'], cut_x3, woe_x3))
+    data['NumberOfOpenCreditLinesAndLoans'] = Series(
+        replace_woe(data['NumberOfOpenCreditLinesAndLoans'], cut_x6, woe_x6))
+    data['NumberOfTimes90DaysLate'] = Series(replace_woe(data['NumberOfTimes90DaysLate'], cut_x7, woe_x7))
+    data['NumberRealEstateLoansOrLines'] = Series(replace_woe(data['NumberRealEstateLoansOrLines'], cut_x8, woe_x8))
+    data['NumberOfTime60-89DaysPastDueNotWorse'] = Series(
+        replace_woe(data['NumberOfTime60-89DaysPastDueNotWorse'], cut_x9, woe_x9))
+    data['NumberOfDependents'] = Series(replace_woe(data['NumberOfDependents'], cut_x10, woe_x10))
+    data.to_csv('./data/03_data_model/test_data_woe.csv', index=False)
 
 
 if __name__ == '__main__':
