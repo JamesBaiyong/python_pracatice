@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # @createTime: 19-4-8 下午1:04
 # @author: scdev030
+import math
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -38,6 +40,7 @@ def logistic_model_by_sk_learn():
                    'NumberRealEstateLoansOrLines', 'NumberOfDependents'], axis=1)
     logistic = LogisticRegression()
     logistic.fit(X, Y, sample_weight=(np.array(X['RevolvingUtilizationOfUnsecuredLines'],X['NumberOfTimes90DaysLate'])))
+    print(logistic.coef_[0])
     return logistic
 
 def test_model_by_auc(model_result, sklearn=True):
@@ -52,8 +55,6 @@ def test_model_by_auc(model_result, sklearn=True):
         X_test = sm.add_constant(X_test)
     resu = model_result.predict(X_test)
     fpr, tpr, _ = roc_curve(Y_test, resu)
-    import ipdb
-    ipdb.set_trace()
     rocauc = auc(fpr, tpr)
     # 生成ROC曲线
     plt.plot(fpr, tpr, 'b', label='AUC = %0.2f' % rocauc)
